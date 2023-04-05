@@ -43,7 +43,7 @@ terraform apply
 
 - ✅ [terraform] - Create EC2 instance
 - ✅ [terraform] - Enable communication with server using Security Groups
-- [terraform] - Generate key for accessing server with SSH
+- ✅ [terraform] - Generate key for accessing server with SSH
 - [terraform] - Extend the default storage for EC2
 - [setup.sh] - Create setup.sh script, with required arguments
 - [setup.sh] - Install required libs for libcod compilation, compile libcod
@@ -52,6 +52,7 @@ terraform apply
 - [setup.sh] - Sync CoD2 files with S3
 - [setup.sh] - Create user
 - [setup.sh] - Install FTP client for server management
+- [terraform] - Execute setup.sh script
 - [server.sh] - Create server.sh script, with required parameters
 - [server.sh] - Create startup script and add to CRON
 - [server.sh] - Create links to server files

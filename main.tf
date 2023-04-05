@@ -1,8 +1,26 @@
+resource "tls_private_key" "primary_server_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+
+  provisioner "local-exec" {
+    command = "rm ./keys/primary_server.pem || true"
+  }
+}
+
+resource "aws_key_pair" "primary_server_key" {
+  key_name   = "${var.instance_name}-key"
+  public_key = tls_private_key.primary_server_key.public_key_openssh
+
+  provisioner "local-exec" {
+    command = "mkdir -p keys && echo '${tls_private_key.primary_server_key.private_key_pem}' > ./keys/primary_server.pem"
+  }
+}
+
 data "aws_vpc" "default" {
   default = true
 }
 
-resource "aws_security_group" "servers_main_sg" {
+resource "aws_security_group" "primary_server_sg" {
   name        = "${var.instance_name}-sg"
   description = "${var.instance_name} instace security group"
   vpc_id      = data.aws_vpc.default.id
@@ -31,10 +49,10 @@ resource "aws_security_group" "servers_main_sg" {
   }
 }
 
-resource "aws_instance" "servers_main" {
+resource "aws_instance" "primary_server" {
   ami                    = "ami-0ec7f9846da6b0f61"
   instance_type          = var.instance_type
-  vpc_security_group_ids = [aws_security_group.servers_main_sg.id]
+  vpc_security_group_ids = [aws_security_group.primary_server_sg.id]
 
   tags = {
     Name = var.instance_name
