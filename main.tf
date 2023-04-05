@@ -65,4 +65,25 @@ resource "aws_instance" "primary_server" {
     encrypted             = false
     delete_on_termination = true
   }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = tls_private_key.primary_server_key.private_key_pem
+    host        = self.public_ip
+  }
+
+  provisioner "file" {
+    source = "scripts/setup"
+    destination = "/home/ubuntu/setup"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /home/ubuntu/setup/setup.sh",
+      "chmod +x /home/ubuntu/setup/parts/other.sh",
+      "/home/ubuntu/setup/setup.sh",
+      "/home/ubuntu/setup/parts/other.sh"
+    ]
+  }
 }

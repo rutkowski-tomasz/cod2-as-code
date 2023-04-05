@@ -53,10 +53,12 @@ terraform apply
 - [setup.sh] - Sync CoD2 files with S3
 - [setup.sh] - Create user
 - [setup.sh] - Install FTP client for server management
-- [terraform] - Execute setup.sh script
+- ✅ [terraform] - Execute setup.sh script on remote machine
 - [server.sh] - Create server.sh script, with required parameters
 - [server.sh] - Create startup script and add to CRON
 - [server.sh] - Create links to server files
+- [server.sh] - Create FTP user
 - [server.sh] - Create structure for project
+- [terraform] - Copy server.sh to remote instance
 - [docker/idea] - Run server inside Docker instead of screen
 
