@@ -1,4 +1,5 @@
 #!/bin/bash
+
 source parts/parse_arguments.sh
 
 args=$(parse_arguments "$@")
@@ -16,4 +17,6 @@ aws_access_key_id=${parsed_args[3]}
 aws_secret_access_key=${parsed_args[4]}
 s3_bucket_name=${parsed_args[5]}
 
+# Installation
+sudo ./parts/required_packages.sh
 ./parts/other.sh $mysql_password
