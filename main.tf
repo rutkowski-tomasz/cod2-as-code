@@ -80,9 +80,9 @@ resource "aws_instance" "primary_server" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x -R /home/ubuntu/setup",
-      "cd /home/ubuntu/setup",
-      "./start.sh --mysql_password=${var.mysql_password} --user_name=${var.user_name} --user_password=${var.user_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
+      "chmod +x -R ~/setup",
+      # "cd ~/setup",
+      # "./start.sh --mysql_password=${var.mysql_password} --user_name=${var.user_name} --user_password=${var.user_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
     ]
   }
 }
