@@ -18,5 +18,12 @@ aws_secret_access_key=${parsed_args[4]}
 s3_bucket_name=${parsed_args[5]}
 
 # Installation
-sudo ./parts/required_packages.sh
+
+## Structure
+./parts/structure.sh
+
+## Libcod
+sudo ./parts/required_packages.sh # elevated privilidges required for package instalation
+./parts/libcod.sh
+
 ./parts/other.sh $mysql_password

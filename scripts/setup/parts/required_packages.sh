@@ -1,8 +1,14 @@
 #!/bin/bash
 
 # cod2 requirements
+echo
+echo "adding architecture i386..."
 dpkg --add-architecture i386
+echo "done"
+
+echo "apt-get update..."
 apt-get update
+echo "done"
 
 echo
 echo "installing libstdc++5:i386..."
