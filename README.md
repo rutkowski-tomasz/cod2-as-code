@@ -54,7 +54,7 @@ cd ~/setup && ./start.sh --mysql_password=example --user_name=cod --user_passwor
 - ✅ [setup.sh] - Install required libs for libcod compilation, compile libcod
 - [setup.sh] - Install LAMP stack, unlock required ports
 - [setup.sh] - Install screen
-- [setup.sh] - Sync CoD2 files with S3
+- ✅ [setup.sh] - Sync CoD2 files with S3
 - [setup.sh] - Create user
 - [setup.sh] - Install FTP client for server management
 - ✅ [terraform] - Execute setup.sh script on remote machine
