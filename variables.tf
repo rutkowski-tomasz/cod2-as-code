@@ -20,3 +20,33 @@ variable "instance_name" {
   description = "EC2 instance name."
   default     = "cod2-primary"
 }
+
+variable "mysql_password" {
+  type        = string
+  description = "Password that will be set for MySQL root user."
+}
+
+variable "user_name" {
+  type        = string
+  description = "Name of the user that will be used to start the server."
+}
+
+variable "user_password" {
+  type        = string
+  description = "Password of the user that will be used to start the server."
+}
+
+variable "aws_access_key_id" {
+  type        = string
+  description = "AWS Access Key Id configured with S3 read permission."
+}
+
+variable "aws_secret_access_key" {
+  type        = string
+  description = "AWS Secret Access Key configured with S3 read permission."
+}
+
+variable "s3_bucket_name" {
+  type        = string
+  description = "Name of the bucket that is hosting server files."
+}

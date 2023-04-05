@@ -1,4 +1,5 @@
-echo "other"
-pwd
-whoami
-whoami > whoami.txt
+#!/bin/bash
+
+mysql_password=$1
+
+echo "MySQL password is $mysql_password"
