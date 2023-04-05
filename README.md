@@ -41,7 +41,7 @@ terraform apply
 
 # Roadmap
 
-- [terraform] - Create EC2 instance
+- ✅ [terraform] - Create EC2 instance
 - [terraform] - Enable communication with server using Security Groups
 - [terraform] - Generate key for accessing server with SSH
 - [terraform] - Extend the default storage for EC2
