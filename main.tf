@@ -57,4 +57,11 @@ resource "aws_instance" "primary_server" {
   tags = {
     Name = var.instance_name
   }
+
+  root_block_device {
+    volume_size           = "20"
+    volume_type           = "gp2"
+    encrypted             = false
+    delete_on_termination = true
+  }
 }

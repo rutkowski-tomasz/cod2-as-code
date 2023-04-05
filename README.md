@@ -44,7 +44,7 @@ terraform apply
 - ✅ [terraform] - Create EC2 instance
 - ✅ [terraform] - Enable communication with server using Security Groups
 - ✅ [terraform] - Generate key for accessing server with SSH
-- [terraform] - Extend the default storage for EC2
+- ✅ [terraform] - Extend the default storage for EC2
 - [setup.sh] - Create setup.sh script, with required arguments
 - [setup.sh] - Install required libs for libcod compilation, compile libcod
 - [setup.sh] - Install LAMP stack, unlock required ports
