@@ -34,10 +34,11 @@ S3 bucket
 
 ```sh
 # Provision required resources
-terraform apply 
-```
+terraform apply
 
-!!! **Work in progress** !!!
+# SSH connect to the created server
+./scripts/connect.sh
+```
 
 # Roadmap
 

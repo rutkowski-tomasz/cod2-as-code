@@ -52,6 +52,7 @@ resource "aws_security_group" "primary_server_sg" {
 resource "aws_instance" "primary_server" {
   ami                    = "ami-0ec7f9846da6b0f61"
   instance_type          = var.instance_type
+  key_name               = aws_key_pair.primary_server_key.key_name
   vpc_security_group_ids = [aws_security_group.primary_server_sg.id]
 
   tags = {
