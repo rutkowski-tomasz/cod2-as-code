@@ -9,5 +9,11 @@ terraform {
 
 provider "aws" {
   region  = var.region
-  profile = "terraform"
+  profile = var.profile
+
+  default_tags {
+    tags = {
+      terraform-managed = "true"
+    }
+  }
 }
