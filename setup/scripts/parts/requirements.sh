@@ -1,8 +1,8 @@
 # Install packages
 echo "Installing packages..."
-sudo apt-get update
+sudo apt-get -qq update
 echo " - Done update"
-sudo apt-get -y install docker.io docker-compose unzip
+sudo apt-get -q -y install docker.io docker-compose unzip
 echo " - Done package installation"
 sudo usermod -aG docker ubuntu
 echo " - Done add ubuntu user to docker group"
