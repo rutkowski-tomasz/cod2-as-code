@@ -41,6 +41,38 @@ resource "aws_security_group" "primary_server_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "CoD2 ports"
+    from_port   = 28960
+    to_port     = 28960
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "MySQL"
+    from_port   = 3307
+    to_port     = 3307
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "phpmyadmin"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -82,7 +114,7 @@ resource "aws_instance" "primary_server" {
     inline = [
       "chmod +x -R ~/setup/scripts",
       "cd ~/setup/scripts",
-      "./start.sh --mysql_password=${var.mysql_password} --user_name=${var.user_name} --user_password=${var.user_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
+      # "./start.sh --mysql_password=${var.mysql_password} --user_name=${var.user_name} --user_password=${var.user_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
     ]
   }
 }
