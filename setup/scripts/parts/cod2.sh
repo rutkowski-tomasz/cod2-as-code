@@ -5,6 +5,7 @@ mkdir ~/cod2
 mkdir ~/cod2/main
 mkdir ~/cod2/servers
 mkdir ~/cod2/Library
+mkdir ~/cod2/fastdl
 echo "Creating CoD2 directories... done"
 
 # Sync server files

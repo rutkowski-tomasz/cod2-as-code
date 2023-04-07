@@ -9,7 +9,7 @@ services:
         source: ./html
         target: /var/www/html
       - type: bind
-        source: /home/ubuntu/cod2/Library
+        source: /home/ubuntu/cod2/fastdl
         target: /var/www/downloads
       - type: bind
         source: ./downloads.conf
