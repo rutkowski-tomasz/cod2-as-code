@@ -1,20 +1,18 @@
-# Sync S3
-sudo apt install unzip
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-aws s3 sync $1 ~/cod2/main
+# Create CoD2 directories
+echo "Creating CoD2 directories..."
+mkdir ~/.callofduty2
+mkdir ~/cod2
+mkdir ~/cod2/main
+mkdir ~/cod2/servers
+mkdir ~/cod2/Library
+echo "Creating CoD2 directories... done"
 
-function install_link {
-	ln -s ~/cod2/main/1_0/* ~/cod2_1_0/main/
-	if [ "$1" != "1_0" ]
-	then
-		ln -s ~/cod2/main/"$1"/* ~/cod2_"$1"/main/
-	fi	
-	echo "done main files for $1"
-}
+# Sync server files
+echo "Syncing server files..."
+aws s3 sync --quiet $1 ~/cod2/main
+echo "Syncing server files... done"
 
-# main files link
-install_link 1_0
-install_link 1_2
-install_link 1_3
+# Copy base files
+echo "Copying base files to 1_3..."
+cp ~/cod2/main/1_0/* ~/cod2/main/1_3/
+echo "Copying base files to 1_3... done"
