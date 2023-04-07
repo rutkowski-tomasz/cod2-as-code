@@ -20,16 +20,16 @@ S3 bucket
 ├── 1_0
 │   ├── iw_00.iwd
 │   ├── iw_01.iwd
+│   ├── iw_02.iwd
 │   ├── (...)
+│   ├── iw_13.iwd
 │   ├── iw_14.iwd
-│   ├── localized_english_iw00.iwd
-│   ├── localized_english_iw01.iwd
-│   ├── (...)
-│   └── localized_english_iw11.iwd
+│   └── localized_english_iw99.iwd
 └── 1_3
-    ├── iw_15.iwd
-    └── localized_english_iw11.iwd
+    └── iw_15.iwd
 ```
+
+`localized_english_iw99.iwd` comes from this [IzNoGoD's post](https://killtube.org/showthread.php?2873-CoD2-Install-CoD2-on-your-VDS-much-faster!&p=16261&viewfull=1#post16261)
 
 # Usage
 
@@ -52,8 +52,6 @@ cd ~/setup && ./start.sh --mysql_password=example --user_name=cod --user_passwor
 - ✅ [terraform] - Extend the default storage for EC2
 - ✅ [setup.sh] - Create setup.sh script, with required arguments
 - ✅ [setup.sh] - Install required libs for libcod compilation, compile libcod
-- [setup.sh] - Install LAMP stack, unlock required ports
-- [setup.sh] - Install screen
 - ✅ [setup.sh] - Sync CoD2 files with S3
 - [setup.sh] - Create user
 - [setup.sh] - Install FTP client for server management
@@ -64,5 +62,7 @@ cd ~/setup && ./start.sh --mysql_password=example --user_name=cod --user_passwor
 - [server.sh] - Create FTP user
 - [server.sh] - Create structure for project
 - [terraform] - Copy server.sh to remote instance
-- [docker/idea] - Run server inside Docker instead of screen
-- [idea] - Use zk_libcod
+- ✅ [docker] - Run server inside Docker instead of screen
+- [docker] - Install LAMP stack
+- [docker] - Configure FastDL
+- [lib] - Use zk_libcod
