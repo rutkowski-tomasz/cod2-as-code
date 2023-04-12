@@ -21,19 +21,9 @@ variable "instance_name" {
   default     = "cod2-primary"
 }
 
-variable "mysql_password" {
+variable "mysql_root_password" {
   type        = string
   description = "Password that will be set for MySQL root user."
-}
-
-variable "user_name" {
-  type        = string
-  description = "Name of the user that will be used to start the server."
-}
-
-variable "user_password" {
-  type        = string
-  description = "Password of the user that will be used to start the server."
 }
 
 variable "aws_access_key_id" {

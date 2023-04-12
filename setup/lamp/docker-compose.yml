@@ -30,10 +30,10 @@ services:
         source: db_data
         target: /var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: your_mariadb_root_password
-      MYSQL_DATABASE: your_database_name
-      MYSQL_USER: your_mariadb_user
-      MYSQL_PASSWORD: your_mariadb_user_password
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      # MYSQL_DATABASE: my_db
+      # MYSQL_USER: your_mariadb_user
+      # MYSQL_PASSWORD: your_mariadb_user_password
     ports:
       - target: 3306
         published: 3307

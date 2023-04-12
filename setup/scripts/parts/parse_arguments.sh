@@ -3,14 +3,8 @@
 function parse_arguments() {
   while [ $# -gt 0 ]; do
     case "$1" in
-      --mysql_password=*)
-        mysql_password="${1#*=}"
-        ;;
-      --user_name=*)
-        user_name="${1#*=}"
-        ;;
-      --user_password=*)
-        user_password="${1#*=}"
+      --mysql_root_password=*)
+        mysql_root_password="${1#*=}"
         ;;
       --aws_access_key_id=*)
         aws_access_key_id="${1#*=}"
@@ -29,7 +23,7 @@ function parse_arguments() {
     shift
   done
 
-  for arg_name in "mysql_password" "user_name" "user_password" "aws_access_key_id" "aws_secret_access_key" "s3_bucket_name"; do
+  for arg_name in "mysql_root_password" "aws_access_key_id" "aws_secret_access_key" "s3_bucket_name"; do
     arg_value=$(eval echo \$$arg_name)
     if [ -z "$arg_value" ]; then
       echo "Error: Missing argument --${arg_name}"
@@ -37,5 +31,5 @@ function parse_arguments() {
     fi
   done
 
-  echo "$mysql_password $user_name $user_password $aws_access_key_id $aws_secret_access_key $s3_bucket_name"
+  echo "$mysql_root_password $aws_access_key_id $aws_secret_access_key $s3_bucket_name"
 }

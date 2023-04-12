@@ -3,7 +3,7 @@ resource "tls_private_key" "primary_server_key" {
   rsa_bits  = 4096
 
   provisioner "local-exec" {
-    command = "rm ./keys/primary_server.pem || true"
+    command = "rm ./keys/private_key.pem || true"
   }
 }
 
@@ -12,7 +12,7 @@ resource "aws_key_pair" "primary_server_key" {
   public_key = tls_private_key.primary_server_key.public_key_openssh
 
   provisioner "local-exec" {
-    command = "mkdir -p keys && echo '${tls_private_key.primary_server_key.private_key_pem}' > ./keys/primary_server.pem"
+    command = "mkdir -p keys && echo '${tls_private_key.primary_server_key.private_key_pem}' > ./keys/private_key.pem"
   }
 }
 
@@ -106,15 +106,23 @@ resource "aws_instance" "primary_server" {
   }
 
   provisioner "file" {
-    source      = "setup"
-    destination = "/home/ubuntu/setup"
+    source      = "setup/"
+    destination = "/home/ubuntu"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x -R ~/setup/scripts",
-      "cd ~/setup/scripts",
-      "./start.sh --mysql_password=${var.mysql_password} --user_name=${var.user_name} --user_password=${var.user_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
+      "for file in $(find ~/servers -type f -name '*.cfg'); do",
+      "  sed -i \"s/MYIP/${self.public_ip}/g\" $file",
+      "done"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x -R ~/scripts",
+      "cd ~/scripts",
+      "./start.sh --mysql_root_password=${var.mysql_root_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
     ]
   }
 }

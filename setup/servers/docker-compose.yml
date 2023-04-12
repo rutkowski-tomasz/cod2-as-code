@@ -1,4 +1,3 @@
-# example for 1.0 cod2 server
 version: '3.7'
 services:
   myserver:
@@ -11,7 +10,7 @@ services:
       - 28960:28960
       - 28960:28960/udp
     volumes:
-      - ~/setup/servers/myserver:/cod2/myserver
+      - ./myserver:/cod2/myserver
       - ~/cod2/main/1_3:/cod2/main
       - ~/cod2/Library:/cod2/.callofduty2/myserver/Library
     environment:

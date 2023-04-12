@@ -6,14 +6,14 @@ Setting up Call of Duty 2 server requires a lot of configuration and can be a pa
 
 Thanks a lot to whole [killtube.org](https://killtube.org/) community for open-source developing. This repository uses/installs following projects:
 - [voron00/libcod](https://github.com/voron00/libcod)
-- [Lonsofore/cod2install](https://github.com/Lonsofore/cod2install)
+- [Lonsofore/cod2docker](https://github.com/Lonsofore/cod2docker)
 - [ibuddieat/zk_libcod](https://github.com/ibuddieat/zk_libcod)
 
 # Pre-requirements
 
 - terraform CLI
 - AWS account (`aws_access_key_id` + `aws_secret_access_key` with S3 reader permission) 
-- CoD2 server files uploaded to S3
+- CoD2 server files uploaded to S3, bucket should look like this:
 
 ```
 S3 bucket
@@ -35,13 +35,32 @@ S3 bucket
 
 ```sh
 # Provision required resources
-terraform apply
+terraform apply # See description below
 
 # SSH connect to the created server
 ./scripts/connect.sh
+```
 
-# Setup
-cd ~/setup && ./start.sh --mysql_password=example --user_name=cod --user_password=example --aws_access_key_id=example --aws_secret_access_key=example --s3_bucket_name=example
+# What actions does `terraform apply` perform?
+
+1. Create key pair and stores private one in `keys/private_key.pem`
+2. Creates AWS security groups (opens instance communication)
+3. Creates EC2 instance
+4. Performs initalization on provided machine
+5. Installs required packages like: aws cli, unzip
+6. Setups docker engine and docker-compose
+7. Creates structure for CoD2 servers
+8. Syncs S3 bucket with CoD2 server files
+9. Copies files to enable 1.3 version running
+10. Provides docker-compose files
+
+# FastDL setup
+
+When you want to enable fast download for server you need to copy files to fast download folder. Example for `myserver` file `test.iwd`
+
+```sh
+sudo scp -i ./keys/private_key.pem ./setup/cod2/myserver/test.iwd ubuntu@$(terraform output -raw public_ip):~/cod2/fastdl/myserver/
+sudo scp -i ./keys/private_key.pem ./setup/cod2/myserver/test.iwd ubuntu@$(terraform output -raw public_ip):~/cod2/myserver/
 ```
 
 # Roadmap
@@ -53,16 +72,14 @@ cd ~/setup && ./start.sh --mysql_password=example --user_name=cod --user_passwor
 - ✅ [setup.sh] - Create setup.sh script, with required arguments
 - ✅ [setup.sh] - Install required libs for libcod compilation, compile libcod
 - ✅ [setup.sh] - Sync CoD2 files with S3
-- [setup.sh] - Create user
-- [setup.sh] - Install FTP client for server management
 - ✅ [terraform] - Execute setup.sh script on remote machine
-- [server.sh] - Create server.sh script, with required parameters
-- [server.sh] - Create startup script and add to CRON
-- [server.sh] - Create links to server files
-- [server.sh] - Create FTP user
-- [server.sh] - Create structure for project
-- [terraform] - Copy server.sh to remote instance
+- ✅ [start.sh] - Create start.sh script, with required parameters
+- ✅ [start.sh] - Initalize server files - copy from outside source
+- ✅ [start.sh] - Add support for 1.3 version
+- ✅ [start.sh] - Create structure for project
+- ✅ [terraform] - Copy start.sh to remote instance
+- ✅ [terraform] - Execute start.sh on remote instance
 - ✅ [docker] - Run server inside Docker instead of screen
-- [docker] - Install LAMP stack
-- [docker] - Configure FastDL
-- [lib] - Use zk_libcod
+- ✅ [docker] - Install LAMP stack
+- ✅ [docker] - Configure FastDL
+- [libcod] - Change voron00 to zk version of libcod
