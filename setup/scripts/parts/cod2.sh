@@ -25,3 +25,11 @@ for file in $(find ~/servers -type f -name '*.cfg'); do
     cat $file | grep sv_wwwBaseURL
 done
 echo "Setting MYIP in configs... done"
+
+echo "Creating FastDL folders..."
+for path in $(find ~/servers/* -maxdepth 0 -type d); do
+    folder=$(basename $path)
+    mkdir -p ~/cod2/fastdl/$folder
+    echo " - Created FastDL folder $folder"
+done
+echo "Creating FastDL folders... done"
