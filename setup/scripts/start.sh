@@ -10,12 +10,10 @@ fi
 
 IFS=' ' read -ra parsed_args <<< "$args"
 
-mysql_password=${parsed_args[0]}
-user_name=${parsed_args[1]}
-user_password=${parsed_args[2]}
-aws_access_key_id=${parsed_args[3]}
-aws_secret_access_key=${parsed_args[4]}
-s3_bucket_name=${parsed_args[5]}
+mysql_root_password=${parsed_args[0]}
+aws_access_key_id=${parsed_args[1]}
+aws_secret_access_key=${parsed_args[2]}
+s3_bucket_name=${parsed_args[3]}
 
 # Requirements
 ./parts/requirements.sh
@@ -28,3 +26,8 @@ export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
 
 export AWS_ACCESS_KEY_ID=""
 export AWS_SECRET_ACCESS_KEY=""
+
+./parts/mysql.sh $mysql_root_password
+
+sudo docker-compose -f ~/servers/docker-compose.yml up -d 1> /dev/null
+sudo docker-compose -f ~/lamp/docker-compose.yml up -d 1> /dev/null
