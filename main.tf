@@ -112,14 +112,6 @@ resource "aws_instance" "primary_server" {
 
   provisioner "remote-exec" {
     inline = [
-      "for file in $(find ~/servers -type f -name '*.cfg'); do",
-      "  sed -i \"s/MYIP/${self.public_ip}/g\" $file",
-      "done"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
       "chmod +x -R ~/scripts",
       "cd ~/scripts",
       "./start.sh --mysql_root_password=${var.mysql_root_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
