@@ -12,9 +12,12 @@ services:
         source: /home/ubuntu/cod2/fastdl
         target: /var/www/downloads
       - type: bind
+        source: /home/ubuntu/cod2/Library
+        target: /var/www/Library
+      - type: bind
         source: ./downloads.conf
         target: /etc/apache2/conf-available/downloads.conf
-    command: bash -c "a2enconf downloads && apache2-foreground"
+    command: bash -c "a2enmod rewrite && a2enconf downloads && apache2-foreground"
     ports:
       - target: 80
         published: 80
