@@ -53,6 +53,9 @@ terraform apply # See description below
 8. Syncs S3 bucket with CoD2 server files
 9. Copies files to enable 1.3 version running
 10. Provides docker-compose files
+11. Starts LAMP stack
+12. Configures folder for FastDL
+13. Starts CoD2 server
 
 # FastDL setup
 
@@ -61,6 +64,43 @@ When you want to enable fast download for server you need to copy files to fast 
 ```sh
 sudo scp -i ./keys/private_key.pem ./setup/cod2/myserver/test.iwd ubuntu@$(terraform output -raw public_ip):~/cod2/fastdl/myserver/
 sudo scp -i ./keys/private_key.pem ./setup/cod2/myserver/test.iwd ubuntu@$(terraform output -raw public_ip):~/cod2/myserver/
+```
+
+# Use scripts to setup on existing machine
+
+1. Put the necessary scripts on the machine
+```sh
+sudo scp -r -i ./keys/primary_server.pem ./setup/ ubuntu@$(terraform output -raw public_ip):~/setup
+```
+
+Expected structure:
+```
+/home/ubuntu
+├── lamp
+│   ├── docker-compose.yml
+│   ├── downloads.conf
+│   └── html
+│       └── index.php
+├── scripts
+│   ├── parts
+│   │   ├── cod2.sh
+│   │   ├── mysql.sh
+│   │   ├── parse_arguments.sh
+│   │   └── requirements.sh
+│   └── start.sh
+└── servers
+    ├── docker-compose.yml
+    └── myserver
+        ├── sample_fx.iwd
+        └── server.cfg
+```
+
+2. Run following commands
+
+```sh
+chmod +x -R ~/scripts
+cd ~/scripts
+./start.sh --mysql_root_password=<your_mysql_root_password> --aws_access_key_id=<your_aws_access_key_id> --aws_secret_access_key=<your_aws_secret_access_key> --s3_bucket_name=<your_s3_bucket_name>
 ```
 
 # Roadmap
