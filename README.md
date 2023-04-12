@@ -68,9 +68,18 @@ sudo scp -i ./keys/private_key.pem ./setup/cod2/myserver/test.iwd ubuntu@$(terra
 
 # Use scripts to setup on existing machine
 
-1. Put the necessary scripts on the machine
+1. Create key for accessing server (skip if already exists)
 ```sh
-sudo scp -r -i ./keys/primary_server.pem ./setup/ ubuntu@$(terraform output -raw public_ip):~/setup
+SERVER=51.68.142.183
+KEYNAME=mykey
+
+ssh-keygen -t ed25519 -b 2048 -f ~/.ssh/$KEYNAME -N ""
+ssh-copy-id -i ~/.ssh/$KEYNAME.pub ubuntu@$SERVER
+```
+
+2. Put the necessary scripts on the machine
+```sh
+sudo scp -r -i ~/.ssh/$KEYNAME ./setup/* ubuntu@$SERVER:~
 ```
 
 Expected structure:
@@ -95,17 +104,26 @@ Expected structure:
         └── server.cfg
 ```
 
-2. Run following commands
+3. Run following commands
 
 ```sh
+ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER
 chmod +x -R ~/scripts
 cd ~/scripts
+export AWS_DEFAULT_REGION=eu-central-1
 ./start.sh --mysql_root_password=<your_mysql_root_password> --aws_access_key_id=<your_aws_access_key_id> --aws_secret_access_key=<your_aws_secret_access_key> --s3_bucket_name=<your_s3_bucket_name>
+```
+
+# Upload newest version of server
+
+Will upload latest docker-compose and server files.
+
+```sh
+./scripts/sync_myserver.sh
 ```
 
 # Roadmap
 
-- ✅ [terraform] - Create EC2 instance
 - ✅ [terraform] - Enable communication with server using Security Groups
 - ✅ [terraform] - Generate key for accessing server with SSH
 - ✅ [terraform] - Extend the default storage for EC2

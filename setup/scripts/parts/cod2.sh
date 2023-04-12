@@ -9,7 +9,7 @@ echo "Creating CoD2 directories... done"
 
 # Sync server files
 echo "Syncing server files..."
-aws s3 sync --quiet $1 ~/cod2/main
+aws s3 sync $1 ~/cod2/main 1> /dev/null
 echo "Syncing server files... done"
 
 # Copy base files
