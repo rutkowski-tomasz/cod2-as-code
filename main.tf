@@ -115,9 +115,15 @@ resource "aws_instance" "primary_server" {
     destination = "/home/ubuntu"
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /home/ubuntu/cod2"
+    ]
+  }
+
   provisioner "file" {
     source      = "setup/servers"
-    destination = "/home/ubuntu/cod2/servers"
+    destination = "/home/ubuntu/cod2"
   }
 
   provisioner "remote-exec" {
