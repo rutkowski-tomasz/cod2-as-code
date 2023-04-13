@@ -1,5 +1,3 @@
-**Work in progress - see roadmap at the bottom**
-
 # Motivation
 
 Setting up Call of Duty 2 server requires a lot of configuration and can be a pain. Use this repo to automate process of provisioning and configuring. It utilizes terraform and creates EC2 instance then deploys desired CoD2 servers on it.
@@ -119,7 +117,7 @@ export AWS_DEFAULT_REGION=eu-central-1
 Will upload latest docker-compose and server files.
 
 ```sh
-./scripts/sync_myserver.sh
+./scripts/sync_server.sh nl-example
 ```
 
 # Roadmap
@@ -140,4 +138,5 @@ Will upload latest docker-compose and server files.
 - ✅ [docker] - Run server inside Docker instead of screen
 - ✅ [docker] - Install LAMP stack
 - ✅ [docker] - Configure FastDL
+- ✅ [sync_server.sh] - Create script for syncing new version of server
 - [libcod] - Change voron00 to zk version of libcod

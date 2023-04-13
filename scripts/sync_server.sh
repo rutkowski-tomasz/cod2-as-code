@@ -11,42 +11,24 @@ if [[ -z "${SERVER}" ]]; then
 fi
 
 if [ -z ${1+x} ]; then
-    echo "Error! Usage example: ./scripts/add_server.sh <fs-game>"
+    echo "Error! Usage example: ./scripts/sync_server.sh <server-name>"
     exit 1
 fi
 
-FS_GAME=$1
+SERVER_NAME=$1
 
-LOCAL_DIRECTORY=./setup/servers/$FS_GAME
+LOCAL_DIRECTORY=./setup/servers/$SERVER_NAME
 if [ ! -d "$LOCAL_DIRECTORY" ]; then
     echo "$LOCAL_DIRECTORY does not exist."
     exit 1
 fi
 
-LOCAL_DOCKER_COMPOSE=./setup/servers/docker-compose/$FS_GAME/docker-compose.yml
-if [ ! -f "$LOCAL_DOCKER_COMPOSE" ]; then
-    echo "$LOCAL_DOCKER_COMPOSE does not exist."
-    exit 1
-fi
+echo "Syncing local $SERVER_NAME to remote"
 
-echo "Syncing local $FS_GAME to remote"
-
-echo "Clearing FS_GAME remote folder..."
-ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER "rm -rf ~/servers/$FS_GAME/*"
-echo "Clearing FS_GAME remote folder... done"
-
-echo "Clearing remote docker-compose..."
-ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER "rm ~/servers/docker-compose/$FS_GAME/docker-compose.yml"
-echo "Clearing remote docker-compose... done"
+echo "Clearing server remote folder..."
+ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER "rm -rf ~/cod2/servers/$SERVER_NAME/*"
+echo "Clearing server remote folder... done"
 
 echo "Uploading server files..."
-scp -r -i ~/.ssh/$KEYNAME $LOCAL_DIRECTORY ubuntu@$SERVER:/home/ubuntu/servers/
+scp -r -i ~/.ssh/$KEYNAME $LOCAL_DIRECTORY ubuntu@$SERVER:~/cod2/servers
 echo "Uploading server files... done"
-
-echo "Creating docker-compose folder..."
-ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER "mkdir -p ~/servers/docker-compose/$FS_GAME"
-echo "Creating docker-compose folder... done"
-
-echo "Uploading docker-compose..."
-scp -r -i ~/.ssh/$KEYNAME $LOCAL_DOCKER_COMPOSE ubuntu@$SERVER:~/servers/docker-compose/$FS_GAME/docker-compose.yml
-echo "Uploading docker-compose... done"

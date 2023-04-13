@@ -106,8 +106,24 @@ resource "aws_instance" "primary_server" {
   }
 
   provisioner "file" {
-    source      = "setup/"
+    source      = "setup/lamp"
     destination = "/home/ubuntu"
+  }
+
+  provisioner "file" {
+    source      = "setup/scripts"
+    destination = "/home/ubuntu"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /home/ubuntu/cod2"
+    ]
+  }
+
+  provisioner "file" {
+    source      = "setup/servers"
+    destination = "/home/ubuntu/cod2"
   }
 
   provisioner "remote-exec" {

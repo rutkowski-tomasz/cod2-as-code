@@ -29,5 +29,5 @@ export AWS_SECRET_ACCESS_KEY=""
 
 ./parts/mysql.sh $mysql_root_password
 
-sudo docker-compose -f ~/servers/docker-compose/myserver/docker-compose.yml up -d 1> /dev/null
+sudo docker-compose -f ~/cod2/servers/nl-example/docker-compose.yml up -d 1> /dev/null
 sudo docker-compose -f ~/lamp/docker-compose.yml up -d 1> /dev/null
