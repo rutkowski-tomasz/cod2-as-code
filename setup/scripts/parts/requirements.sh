@@ -6,6 +6,8 @@ sudo apt-get -q -y install docker.io docker-compose unzip
 echo " - Done package installation"
 sudo usermod -aG docker ubuntu
 echo " - Done add ubuntu user to docker group"
+sudo docker network create my_network
+echo " - Done create my_network"
 echo "Installing packages... done"
 
 # Install AWS CLI
