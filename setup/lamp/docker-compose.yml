@@ -1,29 +1,20 @@
 version: '3'
 
 services:
-  web:
-    image: php:7.4-apache
-    container_name: my-web-server
-    volumes:
-      - type: bind
-        source: ./html
-        target: /var/www/html
-      - type: bind
-        source: /home/ubuntu/cod2/fastdl
-        target: /var/www/downloads
-      - type: bind
-        source: /home/ubuntu/cod2/Library
-        target: /var/www/Library
-      - type: bind
-        source: ./downloads.conf
-        target: /etc/apache2/conf-available/downloads.conf
-    command: bash -c "a2enmod rewrite && a2enconf downloads && apache2-foreground"
-    ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-    depends_on:
-      - db
+  # web:
+  #   image: php:7.4-apache
+  #   container_name: my-web-server
+  #   volumes:
+  #     - type: bind
+  #       source: ./html
+  #       target: /var/www/html
+  #   command: bash -c "a2enmod rewrite && apache2-foreground"
+  #   ports:
+  #     - target: 80
+  #       published: 80
+  #       protocol: tcp
+  #   depends_on:
+  #     - db
 
   db:
     image: mariadb:10.5
@@ -33,7 +24,7 @@ services:
         source: db_data
         target: /var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_ROOT_PASSWORD: aaaaMYSQL_ROOT_PASSWORD
       # MYSQL_DATABASE: my_db
       # MYSQL_USER: your_mariadb_user
       # MYSQL_PASSWORD: your_mariadb_user_password
@@ -56,3 +47,8 @@ services:
 
 volumes:
   db_data: {}
+
+networks:
+  default:
+    external:
+      name: my_network

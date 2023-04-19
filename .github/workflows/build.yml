@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # - name: Login to DockerHub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build all images and push
+        run: ./scripts/build_all.sh lonsofore/cod2 1
+
+      # - name: Login to Github
+      #   uses: docker/login-action@v1
+      #   with:
+      #     #registry: ghcr.io
+      #     registry: docker.pkg.github.com
+      #     username: ${{ github.repository_owner }}
+      #     password: ${{ secrets.GH_TOKEN }}
+
+      # - name: Push all images
+      #   #run: ./scripts/push_all.sh lonsofore/cod2 ghcr.io/lonsofore/cod2
+      #   run: ./scripts/push_all.sh lonsofore/cod2 docker.pkg.github.com/lonsofore/cod2docker/cod2

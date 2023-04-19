@@ -35,3 +35,4 @@ terraform.rc
 
 # Custom
 keys
+.DS_Store
