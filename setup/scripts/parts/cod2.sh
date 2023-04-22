@@ -4,7 +4,6 @@ mkdir ~/.callofduty2
 mkdir ~/cod2
 mkdir ~/cod2/main
 mkdir ~/cod2/Library
-mkdir ~/cod2/fastdl
 mkdir ~/cod2/servers
 echo "Creating CoD2 directories... done"
 
