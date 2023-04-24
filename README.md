@@ -59,8 +59,10 @@ You have two options:
 ```sh
 terraform apply # See description below
 
-# SSH connect to the created server
+# SSH connect
 ./scripts/connect.sh
+# MySQL connect
+./scripts/mysql.sh
 ```
 
 To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure DNS A record for subdomains `fastdl.yourdomain.com` and `pma.yourdomain.com`.
@@ -123,6 +125,11 @@ ssh -i ~/.ssh/$COD2_AS_CODE_KEY_NAME ubuntu@$COD2_AS_CODE_SERVER_ADDRESS # Conne
 ~/scripts/start.sh \
     --mysql_root_password=changemeplease \
     --domain=yourdomain.com
+
+# SSH connect
+./scripts/connect.sh
+# MySQL connect
+./scripts/mysql.sh
 ```
 
 To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure DNS A record for subdomains `fastdl.yourdomain.com` and `pma.yourdomain.com`. It's recommended to also configure a firewall.
