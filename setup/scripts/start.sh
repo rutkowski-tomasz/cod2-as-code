@@ -14,8 +14,8 @@ while [ $# -gt 0 ]; do
         --s3_bucket_name=*)
         s3_bucket_name="${1#*=}"
         ;;
-        --s3_bukcet_region=*)
-        s3_bukcet_region="${1#*=}"
+        --s3_bucket_region=*)
+        s3_bucket_region="${1#*=}"
         ;;
         --domain=*)
         domain="${1#*=}"
@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-for arg_name in "mysql_root_password" "aws_access_key_id" "aws_secret_access_key" "s3_bucket_name" "s3_bukcet_region" "domain"; do
+for arg_name in "mysql_root_password" "domain"; do
 arg_value=$(eval echo \$$arg_name)
 if [ -z "$arg_value" ]; then
     echo "Error: Missing argument --${arg_name}"
@@ -36,23 +36,17 @@ if [ -z "$arg_value" ]; then
 fi
 done
 
-$cwd=$(pwd)
-echo "Executing in $cwd"
+ABSOLUTE_FILENAME=$(readlink -e "$0")
+DIRECTORY=$(dirname "$ABSOLUTE_FILENAME")
 
-# Requirements
-$cwd/parts/requirements.sh
-$cwd/parts/envsubst.sh $mysql_root_password $domain
-
-# CoD2
-export AWS_ACCESS_KEY_ID=$aws_access_key_id
-export AWS_SECRET_ACCESS_KEY=$aws_secret_access_key
-
-$cwd/parts/cod2.sh $s3_bucket_name $s3_bukcet_region
-
-export AWS_ACCESS_KEY_ID=""
-export AWS_SECRET_ACCESS_KEY=""
+# Run scripts
+$DIRECTORY/parts/requirements.sh
+$DIRECTORY/parts/envsubst.sh $mysql_root_password $domain
+$DIRECTORY/parts/cod2.sh $s3_bucket_name $s3_bucket_region $aws_access_key_id $aws_secret_access_key
 
 # Start services
-sudo docker-compose -f ~/cod2/servers/nl-example/docker-compose.yml up -d 1> /dev/null
-sudo docker-compose -f ~/reverse-proxy/docker-compose.yml up -d 1> /dev/null
-sudo docker-compose -f ~/lamp/docker-compose.yml up -d 1> /dev/null
+sg docker -c "cd ~/lamp && docker-compose up -d 1> /dev/null"
+sg docker -c "cd ~/reverse-proxy && docker-compose up -d 1> /dev/null"
+for dir in ~/cod2/servers/*/; do
+    sg docker -c "cd $dir && docker-compose up -d 1> /dev/null"
+done

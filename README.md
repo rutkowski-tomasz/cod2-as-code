@@ -69,7 +69,7 @@ To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure D
 
 1. Create key for accessing server (skip if already exists)
 ```sh
-SERVER=51.68.142.183
+SERVER=34.246.184.216
 KEYNAME=mykey
 
 ssh-keygen -t ed25519 -b 2048 -f ~/.ssh/$KEYNAME -N "" # Generate the key
@@ -110,14 +110,18 @@ Expected structure:
 ```sh
 ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER # Connect to the machine
 
-# Run the setup script
-# !! Remember to adjust your variables
+# Run the setup script if you want to get server files from your S3 (fully automatic installation)
 ~/scripts/start.sh \
     --mysql_root_password=changemeplease \
     --aws_access_key_id=AAAAAAAAAAAAAAAAAAAA \
     --aws_secret_access_key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
     --s3_bucket_name=s3://cod2-server-files \
-    --s3_bukcet_region=eu-central-1 \
+    --s3_bucket_region=eu-central-1 \
+    --domain=yourdomain.com
+
+# Or else upload CoD2 base server files using FTP (part manual installation)
+~/scripts/start.sh \
+    --mysql_root_password=changemeplease \
     --domain=yourdomain.com
 ```
 

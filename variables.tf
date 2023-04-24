@@ -41,7 +41,7 @@ variable "s3_bucket_name" {
   description = "Name of the bucket that is hosting server files."
 }
 
-variable "s3_bukcet_region" {
+variable "s3_bucket_region" {
   type        = string
   description = "Region of the bucket that is hosting server files."
 }
