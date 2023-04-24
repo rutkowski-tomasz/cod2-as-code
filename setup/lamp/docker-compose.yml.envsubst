@@ -3,7 +3,7 @@ version: '3'
 services:
   # web:
   #   image: php:7.4-apache
-  #   container_name: my-web-server
+  #   container_name: web
   #   volumes:
   #     - type: bind
   #       source: ./html
@@ -18,7 +18,7 @@ services:
 
   db:
     image: mariadb:10.5
-    container_name: my-mariadb-server
+    container_name: db
     volumes:
       - type: volume
         source: db_data
@@ -35,7 +35,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: my-phpmyadmin
+    container_name: phpmyadmin
     environment:
       PMA_HOST: db
     ports:

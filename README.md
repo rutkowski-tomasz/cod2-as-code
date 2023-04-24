@@ -1,13 +1,30 @@
-# Motivation
+# 🌎 Motivation
 
-Setting up Call of Duty 2 server requires a lot of configuration and can be a pain. Use this repo to automate process of provisioning and configuring. It utilizes terraform and creates EC2 instance then deploys desired CoD2 servers on it.
+> Start Call of Duty 2 server from nothing with just 2 commands and 3 minutes waiting. 🤩
 
-Thanks a lot to whole [killtube.org](https://killtube.org/) community for open-source developing. This repository uses/installs following projects:
-- [voron00/libcod](https://github.com/voron00/libcod)
-- [Lonsofore/cod2docker](https://github.com/Lonsofore/cod2docker)
-- [ibuddieat/zk_libcod](https://github.com/ibuddieat/zk_libcod)
+Setting up Call of Duty 2 server requires a lot of configuration and can be a pain. Use this repo to automate process of provisioning and configuring. It utilizes terraform and does everything for you. The CoD2 server will be launched inside docker. The docker image used is maintained here: [cod2-docker](https://github.com/rutkowski-tomasz/cod2-docker).
 
-# Pre-requirements
+Thanks a lot to whole [killtube.org](https://killtube.org/) community for open-source developing. 🥰
+
+# 🚀 Features
+
+1. Creates key pair and stores locally
+2. Configures AWS security groups
+3. Creates EC2 instance
+4. Performs initalization on provided machine
+5. Installs required packages like: aws cli, unzip
+6. Setups docker engine and docker-compose
+7. Creates structure for CoD2 servers
+8. Syncs S3 bucket with CoD2 server files
+9. Setups files so you can run either 1.0, 1.2 and 1.3 version
+10. Provides docker-compose files
+11. Starts reverse-proxy
+12. Configures CoD2 FastDL for reverse-proxy
+13. Starts MySQL server
+14. Starts phpmyadmin service
+15. Starts sample CoD2 server
+
+# 📝 Pre-requirements
 
 - terraform CLI
 - AWS account (`aws_access_key_id` + `aws_secret_access_key` with S3 reader permission) 
@@ -29,98 +46,139 @@ S3 bucket
 
 `localized_english_iw99.iwd` comes from this [IzNoGoD's post](https://killtube.org/showthread.php?2873-CoD2-Install-CoD2-on-your-VDS-much-faster!&p=16261&viewfull=1#post16261)
 
-# Usage
+# 🤷🏻‍♂️ How to use?
+
+You have two options:
+
+**Option A**: You have nothing set up - provide whole insfrastructure, install required packages, configure, deploy and run CoD2 servers.
+
+**Option B**: You already have clean VPS machine - do everything above without creating new infrastructure
+
+## 😌 Option A: CoD2 as code approach
 
 ```sh
-# Provision required resources
 terraform apply # See description below
 
 # SSH connect to the created server
 ./scripts/connect.sh
 ```
 
-# What actions does `terraform apply` perform?
+To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure DNS A record for subdomains `fastdl.yourdomain.com` and `pma.yourdomain.com`.
 
-1. Create key pair and stores private one in `keys/private_key.pem`
-2. Creates AWS security groups (opens instance communication)
-3. Creates EC2 instance
-4. Performs initalization on provided machine
-5. Installs required packages like: aws cli, unzip
-6. Setups docker engine and docker-compose
-7. Creates structure for CoD2 servers
-8. Syncs S3 bucket with CoD2 server files
-9. Copies files to enable 1.3 version running
-10. Provides docker-compose files
-11. Starts LAMP stack
-12. Configures folder for FastDL
-13. Starts CoD2 server
-
-# FastDL setup
-
-When you want to enable fast download for server you need to copy files to fast download folder. Example for `myserver` file `test.iwd`
-
-```sh
-sudo scp -i ./keys/private_key.pem ./setup/cod2/myserver/test.iwd ubuntu@$(terraform output -raw public_ip):~/cod2/fastdl/myserver/
-sudo scp -i ./keys/private_key.pem ./setup/cod2/myserver/test.iwd ubuntu@$(terraform output -raw public_ip):~/cod2/myserver/
-```
-
-# Use scripts to setup on existing machine
+## 🖥️ Option B: Configure existing VPS
 
 1. Create key for accessing server (skip if already exists)
 ```sh
-SERVER=51.68.142.183
-KEYNAME=mykey
+export COD2_AS_CODE_SERVER_ADDRESS=34.246.184.216
+export COD2_AS_CODE_KEY_NAME=mykey
 
-ssh-keygen -t ed25519 -b 2048 -f ~/.ssh/$KEYNAME -N ""
-ssh-copy-id -i ~/.ssh/$KEYNAME.pub ubuntu@$SERVER
+ssh-keygen -t ed25519 -b 2048 -f ~/.ssh/$COD2_AS_CODE_KEY_NAME -N "" # Generate the key
+ssh-copy-id -i ~/.ssh/$COD2_AS_CODE_KEY_NAME.pub ubuntu@$COD2_AS_CODE_SERVER_ADDRESS # Copy the key to the machine
 ```
 
-2. Put the necessary scripts on the machine
+2. Upload the necessary scripts on the machine
 ```sh
-sudo scp -r -i ~/.ssh/$KEYNAME ./setup/* ubuntu@$SERVER:~
+sudo scp -r -i ~/.ssh/$COD2_AS_CODE_KEY_NAME ./setup/* ubuntu@$COD2_AS_CODE_SERVER_ADDRESS:~
 ```
 
 Expected structure:
 ```
 /home/ubuntu
 ├── lamp
-│   ├── docker-compose.yml
-│   ├── downloads.conf
+│   ├── docker-compose.yml.envsubst
 │   └── html
 │       └── index.php
+├── reverse-proxy
+│   ├── docker-compose.yml
+│   └── nginx.conf.envsubst
 ├── scripts
 │   ├── parts
 │   │   ├── cod2.sh
-│   │   ├── mysql.sh
-│   │   ├── parse_arguments.sh
+│   │   ├── envsubst.sh
 │   │   └── requirements.sh
 │   └── start.sh
 └── servers
-    ├── docker-compose.yml
-    └── myserver
-        ├── sample_fx.iwd
-        └── server.cfg
+    └── nl-example
+        ├── nl
+        │   ├── sample_fx.iwd
+        │   └── server.cfg.envsubst
+        └── docker-compose.yml
 ```
 
 3. Run following commands
 
 ```sh
-ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER
-chmod +x -R ~/scripts
-cd ~/scripts
-export AWS_DEFAULT_REGION=eu-central-1
-./start.sh --mysql_root_password=<your_mysql_root_password> --aws_access_key_id=<your_aws_access_key_id> --aws_secret_access_key=<your_aws_secret_access_key> --s3_bucket_name=<your_s3_bucket_name>
+ssh -i ~/.ssh/$COD2_AS_CODE_KEY_NAME ubuntu@$COD2_AS_CODE_SERVER_ADDRESS # Connect to the machine
+
+# Run the setup script if you want to get server files from your S3 (fully automatic installation)
+~/scripts/start.sh \
+    --mysql_root_password=changemeplease \
+    --aws_access_key_id=AAAAAAAAAAAAAAAAAAAA \
+    --aws_secret_access_key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+    --s3_bucket_name=s3://cod2-server-files \
+    --s3_bucket_region=eu-central-1 \
+    --domain=yourdomain.com
+
+# Or else upload CoD2 base server files using FTP (part manual installation)
+~/scripts/start.sh \
+    --mysql_root_password=changemeplease \
+    --domain=yourdomain.com
 ```
 
-# Upload newest version of server
+To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure DNS A record for subdomains `fastdl.yourdomain.com` and `pma.yourdomain.com`. It's recommended to also configure a firewall.
 
-Will upload latest docker-compose and server files.
+# 🆕 Updating or creating CoD2 servers
 
-```sh
-./scripts/sync_server.sh nl-example
+You can use this repo also for creating new servers and uploading the newest version of your mod. Let's say you want to update nl-example server. Place all the files that you want inside `setup/servers/nl-example`. Then run the command `./scripts/sync_server.sh nl-example`
+
+# 🙋🏻‍♂️ What's the structure after installation
+
+```
+├── cod2
+│   ├── Library
+│   ├── main
+│   │   ├── 1_0
+│   │   │   ├── iw_00.iwd
+│   │   │   ├── iw_01.iwd
+│   │   │   ├── iw_02.iwd
+│   │   │   ├── (...)
+│   │   │   ├── iw_13.iwd
+│   │   │   ├── iw_14.iwd
+│   │   │   └── localized_english_iw99.iwd
+│   │   └── 1_3
+│   │       ├── iw_00.iwd
+│   │       ├── iw_01.iwd
+│   │       ├── iw_02.iwd
+│   │       ├── (...)
+│   │       ├── iw_14.iwd
+│   │       ├── iw_15.iwd
+│   │       └── localized_english_iw99.iwd
+│   └── servers
+│       └── nl-example
+│           ├── docker-compose.yml
+│           └── nl
+│               ├── maps
+│               │   └── mp
+│               │       └── gametypes
+│               │           └── tdm.gsc
+│               ├── sample_fx.iwd
+│               └── server.cfg.envsubst
+├── lamp
+│   ├── docker-compose.yml
+│   └── html
+│       └── index.php
+├── reverse-proxy
+│   ├── docker-compose.yml
+│   └── nginx.conf
+└── scripts
+    ├── parts
+    │   ├── cod2.sh
+    │   ├── envsubst.sh
+    │   └── requirements.sh
+    └── start.sh
 ```
 
-# Roadmap
+# 🛣️ Roadmap
 
 - ✅ [terraform] - Enable communication with server using Security Groups
 - ✅ [terraform] - Generate key for accessing server with SSH
@@ -139,4 +197,6 @@ Will upload latest docker-compose and server files.
 - ✅ [docker] - Install LAMP stack
 - ✅ [docker] - Configure FastDL
 - ✅ [sync_server.sh] - Create script for syncing new version of server
-- [libcod] - Change voron00 to zk version of libcod
+- ✅ [libcod] - Change voron00 to zk version of libcod
+- ✅ [docker] - Install reverse-proxy, add subdomain configuration for FastDL and phpmyadmin
+- ✅ [start.sh] - Dynamic domain setup
