@@ -3,7 +3,7 @@ resource "tls_private_key" "primary_server_key" {
   rsa_bits  = 4096
 
   provisioner "local-exec" {
-    command = "rm ./keys/private_key.pem || true"
+    command = "rm ~/.ssh/${var.instance_name}_key.pem || true"
   }
 }
 
@@ -12,7 +12,7 @@ resource "aws_key_pair" "primary_server_key" {
   public_key = tls_private_key.primary_server_key.public_key_openssh
 
   provisioner "local-exec" {
-    command = "mkdir -p keys && echo '${tls_private_key.primary_server_key.private_key_pem}' > ./keys/private_key.pem"
+    command = "echo '${tls_private_key.primary_server_key.private_key_pem}' > ~/.ssh/${var.instance_name}_key.pem && chmod 400 ~/.ssh/${var.instance_name}_key.pem"
   }
 }
 
@@ -113,8 +113,7 @@ resource "aws_instance" "primary_server" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x -R ~/scripts",
-      "cd ~/scripts",
-      "./start.sh --mysql_root_password=${var.mysql_root_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name} --s3_bucket_region=${var.s3_bucket_region}"
+      "~/scripts/start.sh --mysql_root_password=${var.mysql_root_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name} --s3_bucket_region=${var.s3_bucket_region} --domain=${var.domain}"
     ]
   }
 }

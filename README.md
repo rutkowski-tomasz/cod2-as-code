@@ -1,8 +1,8 @@
 # 🌎 Motivation
 
-Setting up Call of Duty 2 server requires a lot of configuration and can be a pain. Use this repo to automate process of provisioning and configuring. It utilizes terraform and creates EC2 instance then deploys desired CoD2 servers.
+> Start Call of Duty 2 server from nothing with just 2 commands and 3 minutes waiting. 🤩
 
-The CoD2 server will be launched inside docker. The docker image used is maintained here: [cod2-docker](https://github.com/rutkowski-tomasz/cod2-docker).
+Setting up Call of Duty 2 server requires a lot of configuration and can be a pain. Use this repo to automate process of provisioning and configuring. It utilizes terraform and does everything for you. The CoD2 server will be launched inside docker. The docker image used is maintained here: [cod2-docker](https://github.com/rutkowski-tomasz/cod2-docker).
 
 Thanks a lot to whole [killtube.org](https://killtube.org/) community for open-source developing. 🥰
 
@@ -21,7 +21,7 @@ Thanks a lot to whole [killtube.org](https://killtube.org/) community for open-s
 11. Starts reverse-proxy
 12. Configures CoD2 FastDL for reverse-proxy
 13. Starts MySQL server
-14. Starts PHPMYADMIN service
+14. Starts phpmyadmin service
 15. Starts sample CoD2 server
 
 # 📝 Pre-requirements
@@ -69,16 +69,16 @@ To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure D
 
 1. Create key for accessing server (skip if already exists)
 ```sh
-SERVER=34.246.184.216
-KEYNAME=mykey
+export COD2_AS_CODE_SERVER_ADDRESS=34.246.184.216
+export COD2_AS_CODE_KEY_NAME=mykey
 
-ssh-keygen -t ed25519 -b 2048 -f ~/.ssh/$KEYNAME -N "" # Generate the key
-ssh-copy-id -i ~/.ssh/$KEYNAME.pub ubuntu@$SERVER # Copy the key to the machine
+ssh-keygen -t ed25519 -b 2048 -f ~/.ssh/$COD2_AS_CODE_KEY_NAME -N "" # Generate the key
+ssh-copy-id -i ~/.ssh/$COD2_AS_CODE_KEY_NAME.pub ubuntu@$COD2_AS_CODE_SERVER_ADDRESS # Copy the key to the machine
 ```
 
 2. Upload the necessary scripts on the machine
 ```sh
-sudo scp -r -i ~/.ssh/$KEYNAME ./setup/* ubuntu@$SERVER:~
+sudo scp -r -i ~/.ssh/$COD2_AS_CODE_KEY_NAME ./setup/* ubuntu@$COD2_AS_CODE_SERVER_ADDRESS:~
 ```
 
 Expected structure:
@@ -108,7 +108,7 @@ Expected structure:
 3. Run following commands
 
 ```sh
-ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER # Connect to the machine
+ssh -i ~/.ssh/$COD2_AS_CODE_KEY_NAME ubuntu@$COD2_AS_CODE_SERVER_ADDRESS # Connect to the machine
 
 # Run the setup script if you want to get server files from your S3 (fully automatic installation)
 ~/scripts/start.sh \
@@ -125,11 +125,58 @@ ssh -i ~/.ssh/$KEYNAME ubuntu@$SERVER # Connect to the machine
     --domain=yourdomain.com
 ```
 
-To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure DNS A record for subdomains `fastdl.yourdomain.com` and `pma.yourdomain.com`.
+To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure DNS A record for subdomains `fastdl.yourdomain.com` and `pma.yourdomain.com`. It's recommended to also configure a firewall.
 
 # 🆕 Updating or creating CoD2 servers
 
 You can use this repo also for creating new servers and uploading the newest version of your mod. Let's say you want to update nl-example server. Place all the files that you want inside `setup/servers/nl-example`. Then run the command `./scripts/sync_server.sh nl-example`
+
+# 🙋🏻‍♂️ What's the structure after installation
+
+```
+├── cod2
+│   ├── Library
+│   ├── main
+│   │   ├── 1_0
+│   │   │   ├── iw_00.iwd
+│   │   │   ├── iw_01.iwd
+│   │   │   ├── iw_02.iwd
+│   │   │   ├── (...)
+│   │   │   ├── iw_13.iwd
+│   │   │   ├── iw_14.iwd
+│   │   │   └── localized_english_iw99.iwd
+│   │   └── 1_3
+│   │       ├── iw_00.iwd
+│   │       ├── iw_01.iwd
+│   │       ├── iw_02.iwd
+│   │       ├── (...)
+│   │       ├── iw_14.iwd
+│   │       ├── iw_15.iwd
+│   │       └── localized_english_iw99.iwd
+│   └── servers
+│       └── nl-example
+│           ├── docker-compose.yml
+│           └── nl
+│               ├── maps
+│               │   └── mp
+│               │       └── gametypes
+│               │           └── tdm.gsc
+│               ├── sample_fx.iwd
+│               └── server.cfg.envsubst
+├── lamp
+│   ├── docker-compose.yml
+│   └── html
+│       └── index.php
+├── reverse-proxy
+│   ├── docker-compose.yml
+│   └── nginx.conf
+└── scripts
+    ├── parts
+    │   ├── cod2.sh
+    │   ├── envsubst.sh
+    │   └── requirements.sh
+    └── start.sh
+```
 
 # 🛣️ Roadmap
 

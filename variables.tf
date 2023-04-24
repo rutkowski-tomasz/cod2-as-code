@@ -45,3 +45,8 @@ variable "s3_bucket_region" {
   type        = string
   description = "Region of the bucket that is hosting server files."
 }
+
+variable "domain" {
+  type        = string
+  description = "Your domain that will be configured for reverse-proxy (like: yourdomain.com)."
+}
