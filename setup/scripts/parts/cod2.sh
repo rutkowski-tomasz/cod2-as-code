@@ -9,7 +9,7 @@ echo "Creating CoD2 directories... done"
 
 # Move servers directory
 echo "Moving servers directory..."
-mv ~/setup/servers ~/cod2
+mv ~/servers ~/cod2
 echo "Moving servers directory..."
 
 # Sync server files
