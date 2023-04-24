@@ -13,7 +13,7 @@ http {
 
     server {
         listen 80;
-        server_name fastdl.mynl.pl;
+        server_name fastdl.$DOMAIN;
 
         location ~ ^/(?<project>[^/]+)/nl/(?<file>.+\.iwd)$ {
             root /mnt;
@@ -24,7 +24,7 @@ http {
 
     server {
         listen 80;
-        server_name pma.mynl.pl;
+        server_name pma.$DOMAIN;
 
         location / {
             proxy_pass http://phpmyadmin;

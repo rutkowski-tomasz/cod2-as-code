@@ -16,7 +16,7 @@ set g_log "games_mp.log"
 
 set sv_allowdownload "0"
 set sv_wwwDownload "1"
-set sv_wwwBaseURL "http://MYIP/downloads"
+set sv_wwwBaseURL "http://fastdl.$DOMAIN/nl-example"
 set sv_wwwDlDisconnected "1"
 
 set scr_drawfriend "1"

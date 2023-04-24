@@ -6,7 +6,7 @@ if [[ -z "${KEYNAME}" ]]; then
 fi
 
 if [[ -z "${SERVER}" ]]; then
-    echo "First set env variable KEYNAME"
+    echo "First set env variable SERVER"
     exit 1
 fi
 

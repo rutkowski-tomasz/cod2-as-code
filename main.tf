@@ -106,31 +106,15 @@ resource "aws_instance" "primary_server" {
   }
 
   provisioner "file" {
-    source      = "setup/lamp"
-    destination = "/home/ubuntu"
-  }
-
-  provisioner "file" {
-    source      = "setup/scripts"
-    destination = "/home/ubuntu"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "mkdir -p /home/ubuntu/cod2"
-    ]
-  }
-
-  provisioner "file" {
-    source      = "setup/servers"
-    destination = "/home/ubuntu/cod2"
+    source      = "setup/"
+    destination = "/home/ubuntu/"
   }
 
   provisioner "remote-exec" {
     inline = [
       "chmod +x -R ~/scripts",
       "cd ~/scripts",
-      "./start.sh --mysql_root_password=${var.mysql_root_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name}"
+      "./start.sh --mysql_root_password=${var.mysql_root_password} --aws_access_key_id=${var.aws_access_key_id} --aws_secret_access_key=${var.aws_secret_access_key} --s3_bucket_name=${var.s3_bucket_name} --s3_bucket_region=${var.s3_bucket_region}"
     ]
   }
 }
