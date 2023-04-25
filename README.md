@@ -136,7 +136,9 @@ To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure D
 
 # 🆕 Updating or creating CoD2 servers
 
-You can use this repo also for creating new servers and uploading the newest version of your mod. Let's say you want to update nl-example server. Place all the files that you want inside `setup/servers/nl-example`. Then run the command `./scripts/sync_server.sh nl-example`
+You can use this repo also for creating new servers and uploading the newest version of your mod. Let's say you want to update nl-example server. Place all the files that you want inside `setup/servers/nl-example`. Then run the command `./scripts/sync_server.sh nl-example`. 
+
+Remember changes applied to CoD servers are applied after map restart. To do it use RCON command `rcon map_rotate`. If you however need to restart the whole server you can do it by firstly connecting to the machine with `./scripts/connect.sh` and then navigating to the folder `cd ~/cod2/servers/nl-example` and executing `docker-compose down && docker-compose up -d`.
 
 # 🙋🏻‍♂️ What's the structure after installation
 
