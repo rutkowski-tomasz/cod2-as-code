@@ -36,7 +36,7 @@ resource "aws_security_group" "primary_server_sg" {
   ingress {
     description = "CoD2 ports"
     from_port   = 28960
-    to_port     = 28960
+    to_port     = 28980
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -44,16 +44,8 @@ resource "aws_security_group" "primary_server_sg" {
   ingress {
     description = "CoD2 ports"
     from_port   = 28960
-    to_port     = 28960
+    to_port     = 28980
     protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "MySQL"
-    from_port   = 3307
-    to_port     = 3307
-    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -61,14 +53,6 @@ resource "aws_security_group" "primary_server_sg" {
     description = "HTTP"
     from_port   = 80
     to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "phpmyadmin"
-    from_port   = 8080
-    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -132,7 +132,26 @@ ssh -i ~/.ssh/$COD2_AS_CODE_KEY_NAME ubuntu@$COD2_AS_CODE_SERVER_ADDRESS # Conne
 ./scripts/mysql.sh
 ```
 
+4. Secure your server
+
+This is optional but highly recommended. Ensure you enable traffic only to services that you want to expose.
+
+```sh
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow http
+# sudo ufw allow 3307/tcp # MySQL / uncomment this line if you want to allow for remote access
+sudo ufw allow 28960:28980/tcp # CoD2 servers TCP
+sudo ufw allow 28960:28980/udp # CoD2 servers UDP
+echo "y" | sudo ufw enable
+sudo ufw status
+```
+
+Connection to phpmyadmin or fastdl is not open by default because the traffic will go throught reverse-proxy. Connection to mysql is not open by default because services running on the server will comunicate with it using localhost network.
+
 To get the reverse-proxy (fastdl and phpmyadmin) working remember to configure DNS A record for subdomains `fastdl.yourdomain.com` and `pma.yourdomain.com`. It's recommended to also configure a firewall.
+
 
 # 🆕 Updating or creating CoD2 servers
 
