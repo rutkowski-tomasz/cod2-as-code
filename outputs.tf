@@ -15,6 +15,6 @@ output "connection_string" {
 }
 
 output "key_path" {
-  value = "~/.ssh/${var.instance_name}_key.pem"
+  value       = "~/.ssh/${var.instance_name}_key.pem"
   description = "Location where the SSH key is stored."
 }

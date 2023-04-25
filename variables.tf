@@ -21,6 +21,12 @@ variable "instance_name" {
   default     = "cod2-primary"
 }
 
+variable "instance_disk_size" {
+  type        = number
+  description = "EC2 instance disk size in GBs."
+  default     = 20
+}
+
 variable "mysql_root_password" {
   type        = string
   description = "Password that will be set for MySQL root user."
