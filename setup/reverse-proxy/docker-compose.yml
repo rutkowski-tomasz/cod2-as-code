@@ -10,9 +10,6 @@ services:
       - type: bind
         source: /home/ubuntu/cod2/servers
         target: /mnt/servers
-      - type: bind
-        source: /home/ubuntu/cod2/Library
-        target: /mnt/Library
     ports:
       - target: 80
         published: 80
