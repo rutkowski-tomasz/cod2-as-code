@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: db
+    volumes:
+      - type: volume
+        source: db_volume
+        target: /var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    ports:
+      - target: 3306
+        published: 3307
+        protocol: tcp
+
+volumes:
+  db_volume: {}
+
+networks:
+  default:
+    external:
+      name: my_network
