@@ -206,6 +206,14 @@ Remember changes applied to CoD servers are applied after map restart. To do it 
     └── start.sh
 ```
 
+# 💽 Database restore
+
+After everything is created you can restore your database using this command.
+
+```sh
+mysql -h yourdomain.com -P 3307 -u root -p'changemeplease' --database=db < backup.sql
+```
+
 # 🛣️ Roadmap
 
 - ✅ [terraform] - Enable communication with server using Security Groups
