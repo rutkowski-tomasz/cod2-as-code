@@ -214,6 +214,22 @@ After everything is created you can restore your database using this command.
 mysql -h yourdomain.com -P 3307 -u root -p'changemeplease' --database=db < backup.sql
 ```
 
+# ⏱️ Crontab
+
+Enable servers at VPS startup and create schedule for database backup.
+
+```sh
+cat << EOF > mycron
+@reboot bash -c 'cd /home/ubuntu/db && docker-compose up -d'
+@reboot bash -c 'cd /home/ubuntu/phpmyadmin && docker-compose up -d'
+@reboot bash -c 'cd /home/ubuntu/reverse-proxy && docker-compose up -d'
+@reboot bash -c '/home/ubuntu/cod2/servers/nl-cod2-zom/restart.sh detach'
+0 3 * * * /home/ubuntu/db/backup.sh
+EOF
+crontab mycron
+rm mycron
+```
+
 # 🛣️ Roadmap
 
 - ✅ [terraform] - Enable communication with server using Security Groups
