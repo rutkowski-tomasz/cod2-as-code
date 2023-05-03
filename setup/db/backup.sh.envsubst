@@ -25,13 +25,13 @@
 # rm mycron
 
 DB_USER="root"
-DB_PASSWORD="changemeplease"
+DB_PASSWORD="$MYSQL_ROOT_PASSWORD"
 DB_HOST="mynl.pl"
 DB_PORT="3307"
 S3_BUCKET="nl-db-backup"
 S3_STORAGE_CLASS="ONEZONE_IA"
-AWS_ACCESS_KEY="AAAAAAAA"
-AWS_SECRET_KEY="XXXXX"
+AWS_ACCESS_KEY=""
+AWS_SECRET_KEY=""
 AWS_REGION="eu-central-1"
 
 # List your database names separated by spaces
