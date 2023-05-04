@@ -19,7 +19,7 @@ http {
         location ~ ^/(?<project>[^/]+)/nl/(?<file>.+\.iwd)$ {
             root /mnt/servers;
 
-            try_files /$project/nl/$file /$project/library/$file =404;
+            try_files /$project/nl/$file /$project/library/iwds/$file =404;
         }
     }
 
