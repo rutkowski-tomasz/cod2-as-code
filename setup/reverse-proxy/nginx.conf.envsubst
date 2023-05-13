@@ -35,4 +35,13 @@ http {
             proxy_set_header X-Forwarded-Proto $scheme;
         }
     }
+
+    server {
+        listen 80;
+        server_name ds.mynl.pl;
+
+        location / {
+            return 301 https://discord.gg/37UBvysKQ5;
+        }
+    }
 }
