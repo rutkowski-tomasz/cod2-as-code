@@ -119,12 +119,15 @@ ssh -i ~/.ssh/$COD2_AS_CODE_KEY_NAME ubuntu@$COD2_AS_CODE_SERVER_ADDRESS # Conne
     --aws_secret_access_key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
     --s3_bucket_name=s3://cod2-server-files \
     --s3_bucket_region=eu-central-1 \
-    --domain=yourdomain.com
+    --domain=yourdomain.com \
+    --email=you@domain.com # Used for Let's encrypt SSL cert retrieval
 
 # Or else upload CoD2 base server files using FTP (part manual installation)
 ~/scripts/start.sh \
     --mysql_root_password=changemeplease \
-    --domain=yourdomain.com
+    --domain=yourdomain.com \
+    --email=you@domain.com # Used for Let's encrypt SSL cert retrieval
+
 
 # SSH connect
 ./scripts/connect.sh
@@ -252,3 +255,4 @@ rm mycron
 - ✅ [libcod] - Change voron00 to zk version of libcod
 - ✅ [docker] - Install reverse-proxy, add subdomain configuration for FastDL and phpmyadmin
 - ✅ [start.sh] - Dynamic domain setup
+- ✅ [docker] - certbot with automatic SSL certificate

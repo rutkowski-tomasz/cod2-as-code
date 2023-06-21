@@ -20,6 +20,9 @@ while [ $# -gt 0 ]; do
         --domain=*)
         domain="${1#*=}"
         ;;
+        --email=*)
+        email="${1#*=}"
+        ;;
         *)
         echo "Unknown argument: $1"
         exit 1
@@ -41,7 +44,7 @@ DIRECTORY=$(dirname "$ABSOLUTE_FILENAME")
 
 # Run scripts
 $DIRECTORY/parts/requirements.sh
-$DIRECTORY/parts/envsubst.sh $mysql_root_password $domain
+$DIRECTORY/parts/envsubst.sh $mysql_root_password $domain $email
 $DIRECTORY/parts/cod2.sh $s3_bucket_name $s3_bucket_region $aws_access_key_id $aws_secret_access_key
 
 # Start services

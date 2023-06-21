@@ -12,20 +12,88 @@ http {
     tcp_nodelay       on;
     keepalive_timeout 65;
 
+    # HTTP servers
     server {
         listen 80;
         server_name fastdl.$DOMAIN;
 
-        location ~ ^/(?<project>[^/]+)/nl/(?<file>.+\.iwd)$ {
-            root /mnt/servers;
-
-            try_files /$project/nl/$file /$project/library/iwds/$file =404;
+        location ^~ /.well-known/acme-challenge/ {
+            default_type "text/plain";
+            root /var/www/html;
+            try_files $uri =404;
+        }
+        
+        # Redirect all HTTP requests to HTTPS
+        location / {
+            return 301 https://$host$request_uri;
         }
     }
 
     server {
         listen 80;
         server_name pma.$DOMAIN;
+
+        location ^~ /.well-known/acme-challenge/ {
+            default_type "text/plain";
+            root /var/www/html;
+            try_files $uri =404;
+        }
+        
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name ds.$DOMAIN;
+
+        location ^~ /.well-known/acme-challenge/ {
+            default_type "text/plain";
+            root /var/www/html;
+            try_files $uri =404;
+        }
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name $DOMAIN;
+
+        location ^~ /.well-known/acme-challenge/ {
+            default_type "text/plain";
+            root /var/www/html;
+            try_files $uri =404;
+        }
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    # HTTPS servers
+    server {
+        listen 443 ssl;
+        server_name fastdl.$DOMAIN;
+
+        ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+        
+        location ~ ^/(?<project>[^/]+)/nl/(?<file>.+\.iwd)$ {
+            root /mnt/servers;
+            try_files /$project/nl/$file /$project/library/iwds/$file =404;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name pma.$DOMAIN;
+
+        ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
 
         location / {
             proxy_pass http://phpmyadmin;
@@ -37,8 +105,11 @@ http {
     }
 
     server {
-        listen 80;
-        server_name ds.mynl.pl;
+        listen 443 ssl;
+        server_name ds.$DOMAIN;
+
+        ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
 
         location / {
             return 301 https://discord.gg/37UBvysKQ5;
@@ -46,8 +117,11 @@ http {
     }
 
     server {
-        listen 80;
+        listen 443 ssl;
         server_name $DOMAIN;
+
+        ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
 
         location / {
             proxy_pass http://nl-www;
