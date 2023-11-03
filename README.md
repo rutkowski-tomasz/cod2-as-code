@@ -228,6 +228,7 @@ cat << EOF > mycron
 @reboot bash -c 'cd /home/ubuntu/reverse-proxy && docker-compose up -d'
 @reboot bash -c '/home/ubuntu/cod2/servers/nl-cod2-zom/restart.sh detach'
 0 3 * * * /home/ubuntu/db/backup.sh
+0 3 * * 2 bash -c 'cd /home/ubuntu/reverse-proxy && docker-compose run --rm certbot && docker-compose exec -T reverse-proxy nginx -s reload'
 EOF
 crontab mycron
 rm mycron
