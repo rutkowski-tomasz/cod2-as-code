@@ -74,6 +74,36 @@ http {
         }
     }
 
+    server {
+        listen 80;
+        server_name app.$DOMAIN;
+
+        location ^~ /.well-known/acme-challenge/ {
+            default_type "text/plain";
+            root /var/www/html;
+            try_files $uri =404;
+        }
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name api.$DOMAIN;
+
+        location ^~ /.well-known/acme-challenge/ {
+            default_type "text/plain";
+            root /var/www/html;
+            try_files $uri =404;
+        }
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
     # HTTPS servers
     server {
         listen 443 ssl;
@@ -126,6 +156,38 @@ http {
 
         location / {
             proxy_pass http://nl-www;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name app.$DOMAIN;
+
+        ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+
+        location / {
+            proxy_pass http://nl-app;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name api.$DOMAIN;
+
+        ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+
+        location / {
+            proxy_pass http://nl-api;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
