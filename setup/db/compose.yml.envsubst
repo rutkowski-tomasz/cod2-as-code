@@ -3,7 +3,6 @@ version: '3.8'
 services:
   db:
     image: mariadb:10.11
-    container_name: db
     volumes:
       - type: volume
         source: db_volume
@@ -20,5 +19,5 @@ volumes:
 
 networks:
   default:
-    external:
-      name: my_network
+    name: stack_network
+    external: true

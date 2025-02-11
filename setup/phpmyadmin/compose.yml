@@ -3,11 +3,10 @@ version: '3.8'
 services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
     environment:
       PMA_HOST: db
 
 networks:
   default:
-    external:
-      name: my_network
+    name: stack_network
+    external: true
