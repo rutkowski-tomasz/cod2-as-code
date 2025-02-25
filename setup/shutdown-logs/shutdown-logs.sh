@@ -55,7 +55,7 @@ if grep -q -E "$error_regex" "$TEMP_LOG_FILE"; then
     
     # Calculate the starting line (10 lines before, but not less than 1)
     if [ "$first_error_line" -gt 10 ]; then
-        start_line=$((first_error_line - 10))
+        start_line=$((first_error_line - 5))
     else
         start_line=1
     fi
@@ -64,7 +64,7 @@ if grep -q -E "$error_regex" "$TEMP_LOG_FILE"; then
     total_lines=$(wc -l < "$TEMP_LOG_FILE")
 
     # Extract logs from start_line to the end of the file
-    error_logs=$(sed -n "${start_line},${total_lines}p" "$TEMP_LOG_FILE")
+    error_logs=$(sed -n "${start_line},${total_lines}p" "$TEMP_LOG_FILE" | head -n 50)
 
     # Use jq to properly escape the logs for JSON
     escaped_logs=$(jq -Rs . <<< "$error_logs" | sed 's/^"//;s/"$//')
