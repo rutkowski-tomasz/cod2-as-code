@@ -27,8 +27,20 @@ services:
     volumes:
       - ./certs:/etc/letsencrypt
       - ./www:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email $EMAIL -d $DOMAIN -d fastdl.$DOMAIN -d pma.$DOMAIN -d ds.$DOMAIN -d api.$DOMAIN -d app.$DOMAIN --agree-tos --no-eff-email --force-renewal
+    entrypoint: "/bin/sh"
+    command: >
+      -c 'trap exit TERM; 
+      while :; do
+        certbot renew --webroot --webroot-path=/var/www/html --quiet;
+        echo "$$(date): Renewal check complete. Next check in 24 hours.";
+        sleep 24h & wait $$!;
+      done;'
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+
 networks:
   default:
-    external:
-      name: my_network
+    name: stack_network
+    external: true
