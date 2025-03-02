@@ -257,3 +257,5 @@ rm mycron
 - ✅ [docker] - Install reverse-proxy, add subdomain configuration for FastDL and phpmyadmin
 - ✅ [start.sh] - Dynamic domain setup
 - ✅ [docker] - certbot with automatic SSL certificate
+- ✅ [docker] - CoD2 health checks, auto restarts in case of failure
+- ✅ [docker] - CoD2 master-server registration in swarm mode

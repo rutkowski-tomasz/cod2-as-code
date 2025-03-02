@@ -71,3 +71,15 @@ function copy_server_base_files {
 
 copy_server_base_files 1_2
 copy_server_base_files 1_3
+
+# IP forwarding for cod2 master server registration in docker swarm
+sudo sh -c 'echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf'
+sudo sysctl -p
+
+PUBLIC_IP=$(curl -s https://api.ipify.org)
+sudo iptables -t nat -A PREROUTING -d $PUBLIC_IP -p udp -m udp --dport 28960 -j DNAT --to-destination 127.0.0.1:28960
+sudo iptables -t nat -A PREROUTING -d $PUBLIC_IP -p udp -m udp --dport 28961 -j DNAT --to-destination 127.0.0.1:28961
+sudo iptables -t nat -A POSTROUTING -s 172.0.0.0/8 -d 127.0.0.1 -j MASQUERADE
+
+sudo apt-get install iptables-persistent
+sudo netfilter-persistent save
