@@ -8,7 +8,7 @@ services:
         source: db_volume
         target: /var/lib/mysql
     environment:
-      MARIADB_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
       - target: 3306
         published: 3307
