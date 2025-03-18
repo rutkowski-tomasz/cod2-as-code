@@ -37,7 +37,7 @@ jobs:
             docker config create nginx_static nginx.conf
 
             LETS_ENCRYPT_EMAIL=${{ secrets.LETS_ENCRYPT_EMAIL }} \
-            LETS_ENCRYPT_DOMAINS=${{ secrets.LETS_ENCRYPT_DOMAINS }} \
+            LETS_ENCRYPT_DOMAINS=${{ vars.LETS_ENCRYPT_DOMAINS }} \
               docker stack deploy -c compose.yml ${{ env.StackName }}
             docker context rm temp -f
           '
