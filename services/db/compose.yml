@@ -47,14 +47,14 @@ services:
       echo "0 3 * * * /bin/sh /backup.sh" > /etc/crontabs/root && 
       crond -f -d 8
       '
-    restart: unless-stopped
 
 volumes:
   db_volume: {}
 
 configs:
   backup_script:
-    file: ./backup.sh
+    external: true
+    name: backup_script_static
 
 networks:
   default:
