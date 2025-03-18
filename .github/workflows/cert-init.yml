@@ -1,16 +1,11 @@
-name: reverse-proxy Continuous Integration
+name: cert-init Continuous Integration
 
 on:
-  push:
-    branches: ['**']
-    paths:
-      - 'services/reverse-proxy/**'
-      - '.github/workflows/reverse-proxy.yml'
   workflow_dispatch:
 
 env:
-  WorkingDir: services/reverse-proxy
-  StackName: reverse-proxy
+  WorkingDir: services/cert-init
+  StackName: cert-init
 
 jobs:
   deploy:
@@ -33,10 +28,12 @@ jobs:
             ssh-add ~/.ssh/key
             docker context create temp --docker "host=ssh://${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" && docker context use temp
 
-            docker config rm nginx_static 2>/dev/null || true
-            docker config create nginx_static nginx.conf
+            docker config rm nginx_http_only 2>/dev/null || true
+            docker config create nginx_http_only nginx.conf
 
-            docker stack deploy -c compose.yml ${{ env.StackName }}
+            LETS_ENCRYPT_EMAIL=${{ secrets.LETS_ENCRYPT_EMAIL }} \
+            LETS_ENCRYPT_DOMAINS=${{ vars.LETS_ENCRYPT_DOMAINS }} \
+              docker stack deploy -c compose.yml ${{ env.StackName }}
             docker context rm temp -f
           '
    
