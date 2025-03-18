@@ -1,9 +1,5 @@
 #!/bin/bash
 
-WEBHOOK_URL=""
-# crontab -e
-# */30 * * * * /home/ubuntu/cod2/servers/shutdown-logs/shutdown-logs.sh
-
 ABSOLUTE_FILENAME=$(readlink -e "$0")
 DIRECTORY=$(dirname "$ABSOLUTE_FILENAME")
 
@@ -55,7 +51,7 @@ if grep -q -E "$error_regex" "$TEMP_LOG_FILE"; then
     
     # Calculate the starting line (10 lines before, but not less than 1)
     if [ "$first_error_line" -gt 10 ]; then
-        start_line=$((first_error_line - 5))
+        start_line=$((first_error_line - 10))
     else
         start_line=1
     fi
@@ -74,7 +70,7 @@ if grep -q -E "$error_regex" "$TEMP_LOG_FILE"; then
            "$PROJECT" "$container_id" "$escaped_logs")
 
     # Send to Discord
-    curl -H "Content-Type: application/json" -d "$BODY" "$WEBHOOK_URL"
+    curl -H "Content-Type: application/json" -d "$BODY" "$SHUTDOWN_LOGS_DISCORD_WEBHOOK"
     curl_status=$?
 
     if [ $curl_status -eq 0 ]; then
