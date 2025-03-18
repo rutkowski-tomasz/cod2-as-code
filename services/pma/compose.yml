@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  phpmyadmin:
+  pma:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: db
