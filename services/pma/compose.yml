@@ -5,6 +5,8 @@ services:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: db
+    ports:
+      - "80:80"
 
 networks:
   default:
