@@ -21,44 +21,12 @@ services:
       restart_policy:
         condition: any
         delay: 5s
-    
-  certbot-init:
-    image: certbot/certbot:latest
-    volumes:
-      - /home/ubuntu/reverse-proxy/certs:/etc/letsencrypt
-      - /home/ubuntu/reverse-proxy/www:/var/www/html
-    environment:
-      - LETS_ENCRYPT_DOMAINS=${LETS_ENCRYPT_DOMAINS}
-      - LETS_ENCRYPT_EMAIL=${LETS_ENCRYPT_EMAIL}
-    entrypoint: /bin/sh
-    command: >
-      -c "
-      mkdir -p /var/www/html/.well-known/acme-challenge &&
-      chmod -R 755 /var/www/html &&
-      
-      if [ ! -d /etc/letsencrypt/live/mynl.pl ]; then
-        certbot certonly --webroot --webroot-path=/var/www/html \\
-          --email $${LETS_ENCRYPT_EMAIL} \\
-          --domains $${LETS_ENCRYPT_DOMAINS//,/ -d } \\
-          --agree-tos --no-eff-email \\
-          --non-interactive
-      else
-        echo \"Certificate exists, skipping initial request\"
-      fi &&
-      exit 0
-      "
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 2
   
   certbot-renew:
     image: certbot/certbot:latest
     volumes:
       - /home/ubuntu/reverse-proxy/certs:/etc/letsencrypt
       - /home/ubuntu/reverse-proxy/www:/var/www/html
-    depends_on:
-      - certbot-init
     entrypoint: "/bin/sh"
     command: >
       -c "trap exit TERM; 
