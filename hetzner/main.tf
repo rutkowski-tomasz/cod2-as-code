@@ -38,6 +38,14 @@ resource "hcloud_firewall" "firewall" {
     source_ips = ["0.0.0.0/0", "::/0"]
   }
 
+  # MariaDB access
+  rule {
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "3307"
+    source_ips = ["0.0.0.0/0", "::/0"]
+  }
+
   # CoD2 server ports - TCP
   rule {
     direction  = "in"
