@@ -17,7 +17,7 @@ services:
         condition: on-failure
         max_attempts: 3
     
-  certbot-init:
+  cert-init:
     image: certbot/certbot:latest
     volumes:
       - /home/ubuntu/reverse-proxy/certs:/etc/letsencrypt

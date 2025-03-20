@@ -33,7 +33,8 @@ jobs:
             ssh-add ~/.ssh/key
             docker context create temp --docker "host=ssh://${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" && docker context use temp
 
-            docker config rm shutdown_logs_script_static 2>/dev/null || true
+            docker service rm ${{ env.StackName }}_${{ env.StackName }} || true
+            docker config rm shutdown_logs_script_static || true
             docker config create shutdown_logs_script_static shutdown_logs.sh
 
             SHUTDOWN_LOGS_DISCORD_WEBHOOK=${{ secrets.SHUTDOWN_LOGS_DISCORD_WEBHOOK }} \

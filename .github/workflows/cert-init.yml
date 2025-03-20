@@ -28,6 +28,7 @@ jobs:
             ssh-add ~/.ssh/key
             docker context create temp --docker "host=ssh://${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" && docker context use temp
 
+            docker service rm ${{ env.StackName }}_initial-nginx || true
             docker config rm nginx_http_only 2>/dev/null || true
             docker config create nginx_http_only nginx.conf
 

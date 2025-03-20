@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  backup:
+  shutdown-logs:
     image: alpine:latest
     configs:
       - source: shutdown_logs_script
