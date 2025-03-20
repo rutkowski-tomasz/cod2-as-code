@@ -33,7 +33,8 @@ jobs:
             ssh-add ~/.ssh/key
             docker context create temp --docker "host=ssh://${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" && docker context use temp
 
-            docker config rm backup_script_static 2>/dev/null || true
+            docker service rm ${{ env.StackName }}_backup || true
+            docker config rm backup_script_static || true
             docker config create backup_script_static backup.sh
 
             DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }} \
