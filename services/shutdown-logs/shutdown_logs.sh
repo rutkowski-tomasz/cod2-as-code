@@ -1,12 +1,7 @@
 #!/bin/bash
 
-ABSOLUTE_FILENAME=$(readlink -e "$0")
-DIRECTORY=$(dirname "$ABSOLUTE_FILENAME")
-
-exec 1>> "${DIRECTORY}/shutdown-logs.log" 2>&1
-
 PROJECT="nl-cod2-zom"
-STATE_FILE="${DIRECTORY}/shutdown-logs.state"
+STATE_FILE="shutdown-logs.state"
 TEMP_LOG_FILE="/tmp/shutdown_logs_$$.txt"  # Unique temp file with PID
 LOG_LINES=500
 
