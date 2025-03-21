@@ -1,9 +1,15 @@
 #!/bin/bash
 
+echo "Checking shutdown logs $(date '+%Y-%m-%d %H:%M:%S') v1"
+
 PROJECT="nl-cod2-zom"
-STATE_FILE="shutdown-logs.state"
+STATE_DIR="/var/run/shutdown-logs"
+STATE_FILE="$STATE_DIR/shutdown-logs.state"
 TEMP_LOG_FILE="/tmp/shutdown_logs_$$.txt"  # Unique temp file with PID
 LOG_LINES=500
+
+# Ensure state directory exists
+mkdir -p "$STATE_DIR"
 
 # Ensure state file exists
 [ ! -f "$STATE_FILE" ] && touch "$STATE_FILE"
@@ -23,7 +29,7 @@ fi
 container_id=$(docker inspect --format '{{.Status.ContainerStatus.ContainerID}}' "$task_id" 2>/dev/null)
 if [ -z "$container_id" ]; then
     echo "Could not get container ID for task $task_id"
-    exit 1
+    exit 0
 fi
 
 if grep -Fxq "$container_id" "$STATE_FILE"; then
@@ -34,12 +40,11 @@ fi
 docker logs --tail "$LOG_LINES" "$container_id" > "$TEMP_LOG_FILE" 2>&1
 if [ $? -ne 0 ]; then
     echo "Failed to get logs for container $container_id"
-    exit 1
+    exit 0
 fi
 
 # Define error patterns
-error_patterns=("******* script runtime error *******" "******* script compile error *******")
-error_regex=$(printf "%s|" "${error_patterns[@]}" | sed 's/|$//')  # Join patterns with | and remove trailing |
+error_regex="\*\*\*\*\*\*\* script runtime error \*\*\*\*\*\*\*|\*\*\*\*\*\*\* script compile error \*\*\*\*\*\*\*"
 if grep -q -E "$error_regex" "$TEMP_LOG_FILE"; then
     # Find the first occurrence of an error pattern
     first_error_line=$(grep -n -E "$error_regex" "$TEMP_LOG_FILE" | head -n 1 | cut -d: -f1)
@@ -57,12 +62,23 @@ if grep -q -E "$error_regex" "$TEMP_LOG_FILE"; then
     # Extract logs from start_line to the end of the file
     error_logs=$(sed -n "${start_line},${total_lines}p" "$TEMP_LOG_FILE" | head -n 50)
 
-    # Use jq to properly escape the logs for JSON
-    escaped_logs=$(jq -Rs . <<< "$error_logs" | sed 's/^"//;s/"$//')
-
-    # Construct JSON payload using printf
-    BODY=$(printf '{"content":"Error detected in %s (Container: %s)","embeds":[{"title":"Script Error","description":"```\\n%s\\n```","color":16711680}]}' \
-           "$PROJECT" "$container_id" "$escaped_logs")
+    # Use jq to create a properly escaped JSON payload
+    json_content="Error detected in $PROJECT (Container: $container_id)"
+    json_description="$error_logs"
+    
+    BODY=$(jq -n \
+          --arg content "$json_content" \
+          --arg description "$json_description" \
+          '{
+            "content": $content,
+            "embeds": [
+              {
+                "title": "Script Error",
+                "description": "```\n\($description)\n```",
+                "color": 16711680
+              }
+            ]
+          }')
 
     # Send to Discord
     curl -H "Content-Type: application/json" -d "$BODY" "$SHUTDOWN_LOGS_DISCORD_WEBHOOK"

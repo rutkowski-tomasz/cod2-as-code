@@ -22,8 +22,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     entrypoint: |
       sh -c '
-      apk add --no-cache curl jq &&
-      echo "*/30 * * * * /bin/sh /shutdown_logs.sh" > /etc/crontabs/root && 
+      apk add --no-cache curl jq docker-cli &&
+      echo "*/15 * * * * /bin/sh /shutdown_logs.sh" > /etc/crontabs/root && 
       crond -f -d 8
       '
 
