@@ -31,7 +31,7 @@ services:
     command: >
       -c "trap exit TERM; 
       while :; do
-        certbot renew --webroot --webroot-path=/var/www/html --quiet;
+        certbot renew --webroot --webroot-path=/var/www/html;
         echo \"$$(date): Renewal check complete. Next check in 24 hours.\";
         sleep 24h & wait $$!;
       done;"
