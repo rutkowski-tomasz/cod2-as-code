@@ -4,8 +4,8 @@ services:
   reverse-proxy:
     image: nginx:1.23.4-alpine
     volumes:
-      - /home/ubuntu/reverse-proxy/www:/var/www/html
       - /home/ubuntu/reverse-proxy/certs:/etc/letsencrypt
+      - /home/ubuntu/reverse-proxy/www:/var/www/html
       - /home/ubuntu/cod2/servers:/mnt/servers
     configs:
       - source: nginx
@@ -21,24 +21,43 @@ services:
       restart_policy:
         condition: any
         delay: 5s
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
   
   certbot-renew:
     image: certbot/certbot:latest
     volumes:
       - /home/ubuntu/reverse-proxy/certs:/etc/letsencrypt
       - /home/ubuntu/reverse-proxy/www:/var/www/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     entrypoint: "/bin/sh"
     command: >
-      -c "trap exit TERM; 
+      -c "apk add --no-cache docker-cli &&
+      trap exit TERM; 
       while :; do
-        certbot renew --webroot --webroot-path=/var/www/html \
-          --post-hook '
-            echo \"Reloading Nginx service...\" && \
-            SERVICE_ID=$(docker service ps reverse-proxy_reverse-proxy --format \"{{.ID}}\" | head -n 1) && \
-            CONTAINER_ID=$(docker inspect $SERVICE_ID --format \"{{.Status.ContainerStatus.ContainerID}}\") && \
-            docker exec $CONTAINER_ID nginx -s reload && \
-            echo \"Nginx reload complete.\"
-          ';
+        echo \"$$(date): Starting certificate renewal check...\";
+        if certbot renew --webroot --webroot-path=/var/www/html; then
+          echo \"Certbot renew command completed successfully\";
+          if [ \"$$RENEWED_DOMAINS\" ]; then
+            echo \"Certificates were renewed for domains: $$RENEWED_DOMAINS\";
+            echo \"Looking up reverse-proxy service...\";
+            SERVICE_NAME=$$(docker service ls --filter name=reverse-proxy --format '{{.Name}}');
+            echo \"Found service: $$SERVICE_NAME\";
+            if [ \"$$SERVICE_NAME\" ]; then
+              echo \"Updating nginx service to reload certificates...\";
+              docker service update --force $$SERVICE_NAME;
+              echo \"Nginx service update completed\";
+            else
+              echo \"ERROR: reverse-proxy service not found\";
+            fi;
+          else
+            echo \"No certificates were renewed - no action needed\";
+          fi;
+        else
+          echo \"ERROR: Certbot renew failed\";
+        fi;
         echo \"$$(date): Renewal check complete. Next check in 24 hours.\";
         sleep 24h & wait $$!;
       done;"
