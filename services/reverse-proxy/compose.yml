@@ -38,26 +38,8 @@ services:
       trap exit TERM; 
       while :; do
         echo \"$$(date): Starting certificate renewal check...\";
-        if certbot renew --webroot --webroot-path=/var/www/html; then
-          echo \"Certbot renew command completed successfully\";
-          if [ \"$$RENEWED_DOMAINS\" ]; then
-            echo \"Certificates were renewed for domains: $$RENEWED_DOMAINS\";
-            echo \"Looking up reverse-proxy service...\";
-            SERVICE_NAME=$$(docker service ls --filter name=reverse-proxy --format '{{.Name}}');
-            echo \"Found service: $$SERVICE_NAME\";
-            if [ \"$$SERVICE_NAME\" ]; then
-              echo \"Updating nginx service to reload certificates...\";
-              docker service update --force $$SERVICE_NAME;
-              echo \"Nginx service update completed\";
-            else
-              echo \"ERROR: reverse-proxy service not found\";
-            fi;
-          else
-            echo \"No certificates were renewed - no action needed\";
-          fi;
-        else
-          echo \"ERROR: Certbot renew failed\";
-        fi;
+        certbot renew --webroot --webroot-path=/var/www/html \
+          --post-hook 'docker service update --force reverse-proxy_reverse-proxy';
         echo \"$$(date): Renewal check complete. Next check in 24 hours.\";
         sleep 24h & wait $$!;
       done;"
